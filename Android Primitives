@@ -1,0 +1,203 @@
+AndroidManifest.xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+package=" com.example.it17611_exptno_4 ">
+<application
+android:allowBackup="true"
+android:icon="@mipmap/ic_launcher"
+android:label="@string/app_name"
+android:roundIcon="@mipmap/ic_launcher_round"
+android:supportsRtl="true"
+android:theme="@style/AppTheme">
+<activity android:name=".MainActivity">
+<intent-filter>
+<action android:name="android.intent.action.MAIN" />
+<category android:name="android.intent.category.LAUNCHER" />
+</intent-filter>
+</activity>
+</application>
+</manifest>
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+tools:context=".MainActivity">
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="50dp"
+android:orientation="horizontal"
+android:layout_gravity="bottom">
+<TextView
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:text="Graphical Primitives"
+android:textSize="30dp"/>
+</LinearLayout>
+
+<com.example.it17611_exptno_4.TouchScreen
+android:id="@+id/t1"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:layout_weight="1" />
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="50dp"
+android:orientation="horizontal"
+android:layout_gravity="bottom">
+<Button
+android:id="@+id/b1"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Circle/Ellipse"
+android:singleLine="false"/>
+<Button
+android:id="@+id/b2"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Square/Rect"/>
+<Button
+android:id="@+id/b3"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Text"/>
+<Button
+android:id="@+id/b4"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Clear"/>
+</LinearLayout>
+</LinearLayout>
+
+MainActivity.java
+package com.example.it17611_exptno_4;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+public class MainActivity extends AppCompatActivity {
+TouchScreen t1;
+Button b1,b2,b3,b4;
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+t1=(TouchScreen)findViewById(R.id.t1);
+b1=(Button)findViewById(R.id.b1);
+b2=(Button)findViewById(R.id.b2);
+b3=(Button)findViewById(R.id.b3);
+b4=(Button)findViewById(R.id.b4);
+b1.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View v) {
+
+t1.setDrawint(0);}
+});
+b2.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View v) {
+t1.setDrawint(1);
+}
+});
+b3.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View v) {
+t1.setDrawint(2);
+}
+});
+b4.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View v) {
+t1.startDrawing();
+}
+});
+}
+}
+TouchScreen.java
+package com.example.it17611_exptno_4;
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+public class TouchScreen extends View {
+Paint paint=new Paint();
+Path path=new Path();
+float x,y,x1,y1;
+int flag;
+public TouchScreen(Context context, AttributeSet attributeSet)
+{
+super(context,attributeSet);
+paint.setColor(Color.RED);
+paint.setAntiAlias(true);
+paint.setStrokeJoin(Paint.Join.ROUND);
+paint.setStyle(Paint.Style.STROKE);
+paint.setStrokeWidth(5f);
+}
+@Override
+public void onDraw(Canvas canvas)
+{canvas.drawPath(path,paint);
+}
+
+@Override
+public boolean onTouchEvent(MotionEvent event)
+{
+if(flag==2) {
+float X = event.getX();
+float Y = event.getY();
+switch (event.getAction())
+{
+case MotionEvent.ACTION_DOWN:
+path.moveTo(X, Y);
+return true;
+case MotionEvent.ACTION_MOVE:
+path.lineTo(X, Y);
+break;
+case MotionEvent.ACTION_UP:
+break;
+default:
+return false;
+}
+}
+if(flag == 0 || flag == 1){
+switch (event.getAction()) {
+case MotionEvent.ACTION_DOWN:
+x = event.getX();
+y = event.getY();
+return true;
+case MotionEvent.ACTION_MOVE:
+break;
+case MotionEvent.ACTION_UP:
+x1 = event.getX();
+y1 = event.getY();
+RectF rectF = new RectF(x, y, x1, y1);
+if(flag == 0)
+path.addOval(rectF, Path.Direction.CCW);
+if(flag == 1)
+path.addRect(rectF, Path.Direction.CCW);
+break;
+default:
+return false;
+}
+}
+invalidate();
+return true;
+}
+public void setDrawint(int F)
+{
+flag=F;
+}
+public void startDrawing()
+{
+path.rewind();
+invalidate();
+}
+}
