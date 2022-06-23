@@ -1,0 +1,82 @@
+activity_main.xml
+<? xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:textColor="@color/purple_700"
+        android:textSize="25dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView1"
+        android:textAlignment="center"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click"
+        android:textColor="@color/white"
+        android:id="@+id/btClick"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"></Button>
+
+</RelativeLayout>
+
+
+
+MainActivity.java
+package com.example.exp1;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+    Button bClick;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        bClick = (Button)findViewById(R.id.btClick);
+
+        bClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = new Toast(getApplicationContext());
+                toast.setGravity(Gravity.CENTER, 100, 0);
+                TextView tv = new TextView(MainActivity.this);
+                tv.setBackgroundColor(Color.MAGENTA);
+                tv.setTextColor(Color.BLACK);
+                tv.setTextSize(45);
+
+                Typeface t = Typeface.create("serif", Typeface.BOLD_ITALIC);
+                tv.setTypeface(t);
+                tv.setPadding(10, 10, 10, 10);
+                tv.setText("Hello World!");
+                toast.setView(tv);
+                toast.show();
+            }
+        });
+
+    }
+}
