@@ -1,0 +1,134 @@
+AndroidManifest.xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+package="com.example.it17611_expt_9">
+<application
+android:allowBackup="true"
+android:icon="@mipmap/ic_launcher"
+android:label="@string/app_name"
+android:roundIcon="@mipmap/ic_launcher_round"
+android:supportsRtl="true"
+android:theme="@style/AppTheme">
+<activity android:name=".MainActivity">
+<intent-filter>
+<action android:name="android.intent.action.MAIN" />
+<category android:name="android.intent.category.LAUNCHER" />
+</intent-filter>
+</activity>
+</application>
+</manifest>
+
+Activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MainActivity">
+<Button
+android:text="Save"
+android:layout_width="75dp"
+android:layout_height="wrap_content"
+android:layout_marginLeft="0dp"
+android:layout_marginTop="230dp"
+android:id="@+id/B1" />
+<Button
+
+android:text="Read"
+android:layout_width="75dp"
+android:layout_height="wrap_content"
+android:layout_marginLeft="80dp"
+android:layout_marginTop="230dp"
+android:id="@+id/B2" />
+<Button
+android:text="Clear"
+android:layout_width="75dp"
+android:layout_height="wrap_content"
+android:layout_marginLeft="160dp"
+android:layout_marginTop="230dp"
+android:id="@+id/B3" />
+</RelativeLayout>
+
+MainActivity.java
+package com.example.it17611_expt_9;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
+public class MainActivity extends AppCompatActivity {
+EditText E1;
+Button B1,B2,B3;
+String data;
+String filename="mydata.txt";
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+E1 = (EditText) findViewById(R.id.E1);
+B1 = (Button) findViewById(R.id.B1);
+B2 = (Button) findViewById(R.id.B2);
+B3 = (Button) findViewById(R.id.B3);
+E1.setHint("Enter Some Text Here");
+B1.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View view) {
+writeData();
+}
+});
+B2.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View view) {
+readData();
+}
+});
+B3.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View view) {
+E1.setText("");
+}
+});
+}
+public void writeData()
+{
+String data=E1.getText().toString();try
+{
+
+FileOutputStream fos=openFileOutput(filename,MODE_PRIVATE);
+fos.write(data.getBytes());
+fos.close();
+Toast.makeText(getApplicationContext(),"File Saved: "
++ filename,Toast.LENGTH_LONG).show();
+}
+catch (Exception e)
+{
+Toast.makeText(getApplicationContext(),e.getMessage(),
+Toast.LENGTH_LONG).show();
+}
+}
+public void readData()
+{
+int c;
+String temp="";
+try
+{
+FileInputStream fis=openFileInput(filename);
+while((c=fis.read())!=-1)
+{
+temp=temp+Character.toString((char)c);
+}
+E1.setText(temp);
+Toast.makeText(getApplicationContext(), "File Read: "
++ filename, Toast.LENGTH_LONG).show();
+}
+catch (Exception e)
+{
+Toast.makeText(getApplicationContext(),
+e.getMessage(), Toast.LENGTH_LONG).show();
+}
+}
