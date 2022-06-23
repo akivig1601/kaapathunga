@@ -1,0 +1,146 @@
+AndroidManifest.xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+package="com.example.it17611_expt_10">
+<application
+android:allowBackup="true"
+android:icon="@mipmap/ic_launcher"
+android:label="@string/app_name"
+android:roundIcon="@mipmap/ic_launcher_round"
+android:supportsRtl="true"
+android:theme="@style/AppTheme">
+<activity android:name=".MainActivity">
+<intent-filter>
+<action android:name="android.intent.action.MAIN" />
+<category android:name="android.intent.category.LAUNCHER" />
+</intent-filter>
+</activity>
+<activity android:name=".SmsAlert"></activity>
+</application>
+</manifest>
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MainActivity">
+<TextView
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Alert Box"
+android:layout_centerHorizontal="true"
+android:layout_marginTop="50dp"
+android:textSize="30sp"/>
+<TextView
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginLeft="20dp"
+android:layout_marginTop="150dp"
+android:text=" Type Message"
+android:textSize="20sp" />
+
+<EditText
+android:id="@+id/editText"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_marginLeft="20dp"
+android:layout_marginTop="200dp"
+android:singleLine="true"
+android:textSize="20sp" />
+<Button
+android:id="@+id/button"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginLeft="20dp"
+android:layout_marginTop="300dp"
+android:text="Alert"
+android:textSize="20sp"/>
+</RelativeLayout>
+activity_sms_aler.xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".SmsAlert">
+<TextView
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginLeft="50dp"
+android:layout_marginTop="150dp"
+android:text=""
+android:id="@+id/showmsg"
+android:textSize="20sp" />
+</RelativeLayout>
+MainActivity.java
+package com.example.it17611_expt_10;
+import androidx.appcompat.app.AppCompatActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.content.Intent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+public class MainActivity extends AppCompatActivity
+{
+Button notify;
+EditText sms;
+AlertDialog.Builder builder;
+@Override
+protected void onCreate(Bundle savedInstanceState)
+{
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+notify= (Button) findViewById(R.id.button);
+sms= (EditText) findViewById(R.id.editText);
+builder = new AlertDialog.Builder(this);
+notify.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View v) {
+final String message = sms.getText().toString();
+if(message != "") {
+builder.setMessage(message).setTitle("New Message");
+builder.setMessage(message)
+.setCancelable(false)
+.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+public void onClick(DialogInterface dialog, int id) {
+Intent smsIntent = new Intent(MainActivity.this, SmsAlert.class);
+smsIntent.putExtra("sms", message);
+startActivity(smsIntent);
+finish();
+}
+});
+AlertDialog alert = builder.create();
+alert.setTitle("New Message");
+alert.show();
+}
+
+else{
+Toast.makeText(getApplicationContext(),
+"Type Message in Message Box",Toast.LENGTH_LONG).show();
+}
+}
+});
+}
+}
+SmsAlert.java
+package com.example.it17611_expt_10;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.TextView;
+public class SmsAlert extends AppCompatActivity {
+TextView showmsg;
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_sms_alert);
+showmsg = findViewById(R.id.showmsg);
+Bundle extras = getIntent().getExtras();
+showmsg.setText(extras.getString("sms"));
+}
+}
