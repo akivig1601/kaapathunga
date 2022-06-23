@@ -1,0 +1,184 @@
+Text to speech
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:layout_margin="30dp"
+	tools:context=".MainActivity">
+	
+	<!--To add text in the app-->
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/Text"
+		android:layout_marginBottom="20dp"
+		android:hint="Enter Any Sentence"
+		android:gravity="center"
+		android:textSize="16dp"/>
+	
+	<!--when you press this button it will
+		convert text into speech-->
+	<Button
+		android:layout_width="wrap_content"
+		android:id="@+id/btnText"
+		android:layout_height="wrap_content"
+		android:text="Click Here"
+		android:layout_gravity="center"/>
+
+	<!--To display the name of GeeksForGeeks -->
+	<TextView
+		android:id="@+id/textView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="70dp"
+		android:gravity="center_horizontal"
+		android:text="GEEKSFORGEEKS"
+		android:textColor="@android:color/holo_green_dark"
+		android:textSize="36sp" />
+
+</LinearLayout>
+Java
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import java.util.Locale;
+
+public class MainActivity extends AppCompatActivity {
+
+	EditText Text;
+	Button btnText;
+	TextToSpeech textToSpeech;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		Text = findViewById(R.id.Text);
+		btnText = findViewById(R.id.btnText);
+
+		// create an object textToSpeech and adding features into it
+		textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+			@Override
+			public void onInit(int i) {
+
+				// if No error is found then only it will run
+				if(i!=TextToSpeech.ERROR){
+					// To Choose language of speech
+					textToSpeech.setLanguage(Locale.UK);
+				}
+			}
+		});
+
+		// Adding OnClickListener
+		btnText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				textToSpeech.speak(Text.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
+			}
+		});
+
+	}
+}
+
+Speech to Text
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".MainActivity">
+
+	<ImageView
+		android:id="@+id/iv_mic"
+		android:layout_width="60dp"
+		android:layout_height="60dp"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentEnd="true"
+		android:layout_marginTop="204dp"
+		android:src="@drawable/ic_mic"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.498"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<TextView
+		android:id="@+id/tv_speech_to_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentEnd="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="44dp"
+		android:textSize="30sp"
+		android:padding="10dp"
+		android:text="@string/tap_mic_and_speek"
+		app:layout_constraintEnd_toEndOf="@+id/iv_mic"
+		app:layout_constraintHorizontal_bias="0.489"
+		app:layout_constraintStart_toStartOf="@+id/iv_mic"
+		app:layout_constraintTop_toBottomOf="@+id/iv_mic" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+Java
+class MainActivity extends AppCompatActivity(){
+	private ImageView iv_mic;
+	private TextView tv_Speech_to_text;
+	private static final int REQUEST_CODE_SPEECH_INPUT = 1;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		iv_mic = findViewById(R.id.iv_mic);
+		tv_Speech_to_text = findViewById(R.id.tv_speech_to_text);
+
+		iv_mic.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v)
+			{
+				Intent intent
+					= new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+								RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+								Locale.getDefault());
+				intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text");
+
+				try {
+					startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+				}
+				catch (Exception e) {
+					Toast
+						.makeText(MainActivity.this, " " + e.getMessage(),
+								Toast.LENGTH_SHORT)
+						.show();
+				}
+			}
+		});
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+									@Nullable Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == REQUEST_CODE_SPEECH_INPUT) {
+			if (resultCode == RESULT_OK && data != null) {
+				ArrayList<String> result = data.getStringArrayListExtra(
+					RecognizerIntent.EXTRA_RESULTS);
+				tv_Speech_to_text.setText(
+					Objects.requireNonNull(result).get(0));
+			}
+		}
+	}
+}
