@@ -1,0 +1,99 @@
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+tools:context=".MainActivity">
+<TextView
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="Validate Username and UID"
+android:textSize="20dp"
+android:layout_marginLeft="20dp"
+android:layout_marginTop="60dp"
+android:textColor="@color/midnight_blue"
+android:textStyle="bold" />
+<TextView
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="Username :"
+android:layout_marginTop="30dp"
+android:layout_marginLeft="30dp"
+android:textSize="20dp"
+android:textColor="@color/black"
+android:textStyle="bold"/>
+<EditText
+android:id="@+id/Uname"
+android:inputType="text"
+android:layout_width="260dp"
+android:layout_height="wrap_content"
+android:layout_marginLeft="30dp"
+android:minHeight="48dp"
+android:outlineAmbientShadowColor="@color/black"
+tools:ignore="SpeakableTextPresentCheck" />
+<TextView
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="UID :"
+android:layout_marginTop="30dp"
+android:layout_marginLeft="30dp"
+android:textSize="20dp"
+android:textColor="@color/black"
+android:textStyle="bold"/>
+<EditText
+android:id="@+id/Uid"
+android:inputType="text"
+android:layout_width="260dp"
+android:layout_height="wrap_content"
+android:layout_marginLeft="30dp"
+android:minHeight="48dp"
+android:outlineAmbientShadowColor="@color/black"
+tools:ignore="SpeakableTextPresentCheck" />
+<Button
+android:id="@+id/btn1"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Validate"
+android:textAllCaps="true"
+android:textSize="20dp"
+android:layout_marginLeft="30dp"
+android:layout_marginTop="30dp"
+android:backgroundTint="@color/midnight_blue"/>
+</LinearLayout>
+
+MainActivity.java
+package com.example.validate;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+public class MainActivity extends AppCompatActivity {
+EditText Uname, Uid;
+Button btn;
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+Uname = (EditText) findViewById(R.id.Uname);
+Uid = (EditText) findViewById(R.id.Uid);
+btn = (Button) findViewById(R.id.btn1);
+btn.setOnClickListener(new View.OnClickListener(){
+@Override
+public void onClick(View view) {
+if(Uname.getText().toString().matches("[a-zA-Z]+") && (Uid.getText().toString().matches("[\\d]+")) && (Uid.getText().toString().trim().length()==4))
+Toast.makeText(getApplicationContext(), "Validation Successful", Toast.LENGTH_SHORT).show();
+if (Uname.getText().toString().trim().length()==0 || Uid.getText().toString().trim().length()==0)
+Toast.makeText(getApplicationContext(), "Enter all values", Toast.LENGTH_SHORT).show();
+if (!Uname.getText().toString().matches("[a-zA-Z]+"))
+Toast.makeText(getApplicationContext(), "Enter only alphabets for Username", Toast.LENGTH_SHORT).show();
+if (Uid.getText().toString().trim().length()!= 4 || !Uid.getText().toString().matches("[\\d]+"))
+Toast.makeText(getApplicationContext(), "Enter 4 digit number for UID", Toast.LENGTH_SHORT).show();
+}
+});
+}
+}
